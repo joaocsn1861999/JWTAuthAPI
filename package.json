@@ -1,7 +1,8 @@
 {
   "type": "module",
   "scripts": {
-    "start": "node ./src/server.js"
+    "start": "node ./src/server.js",
+    "createDB": "node ./src/app/database/createTables.js"
   },
   "dependencies": {
     "bcrypt": "^6.0.0",

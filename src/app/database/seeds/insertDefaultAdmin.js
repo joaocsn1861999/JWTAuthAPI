@@ -26,7 +26,7 @@ export default async function insertAdminUser() {
     const { insertedID } = await DBAsyncHelpers.run({
       db,
       sql: `INSERT INTO users
-        (first_name, last_name, email, senha, administrador)
+        (first_name, last_name, email, password, is_admin)
         VALUES (?, ?, ?, ?, ?)`,
       params: ['Admin', 'Principal', adminEmail, hashPassword, 1],
       rejectMessage: 'Erro ao criar usuário admin',

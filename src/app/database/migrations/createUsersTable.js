@@ -1,5 +1,5 @@
 import db from "../connection.js";
-import DBAsyncHelpers from '../DBAsyncHelpers.js';
+import DBAsyncHelpers from '../helpers/DBAsyncHelpers.js';
 
 export default async function createUsersTable() {
   try {

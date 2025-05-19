@@ -1,5 +1,5 @@
 import db from '../connection.js';
-import DBAsyncHelpers from '../DBAsyncHelpers.js';
+import DBAsyncHelpers from '../helpers/DBAsyncHelpers.js';
 import bcrypt from 'bcrypt';
 import dotenv from 'dotenv';
 dotenv.config({ path: './.env' });

@@ -2,7 +2,7 @@ import db from '../database/connection.js';
 import DBAsyncHelpers from '../database/helpers/DBAsyncHelpers.js';
 import buildInsertQuery from '../database/helpers/buildInsertQuery.js';
 
-class UsersRepository {
+class UserRepository {
 
   async create(user) {
     const userData = buildInsertQuery(user);
@@ -125,7 +125,7 @@ class UsersRepository {
     });
   }
 
-  async updatePassword(password, id) {
+  async updatePassword(hashPassword, id) {
     const sql = `
       UPDATE users 
       SET senha = ? 
@@ -134,7 +134,7 @@ class UsersRepository {
     return DBAsyncHelpers.run({
       db,
       sql,
-      params: [password, id],
+      params: [hashPassword, id],
       rejectMessage: 'Erro ao alterar senha do usuário',
     });
   };
@@ -174,4 +174,4 @@ class UsersRepository {
   };
 }
 
-export default new UsersRepository();
+export default new UserRepository();

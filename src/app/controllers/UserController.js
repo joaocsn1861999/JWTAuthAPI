@@ -38,7 +38,7 @@ class UserController {
     try {
         const user = await UserService.createUser(req.body);
         return res.status(201).json({
-            message: 'Usuário criado com sucesso',
+            message: 'Usuário cadastrado com sucesso',
             user: user
         });
     } catch (error) {
@@ -81,7 +81,9 @@ class UserController {
 
   async destroy(req, res) {
     try {
-        await UserService.deleteUser(req.params.id);
+        // userId provisório, deve vir do token
+        // req.user.id
+        await UserService.deleteUser(req.params.id, 1);
         return res.status(200).json({
             message: 'Usuário deletado com sucesso'
         });

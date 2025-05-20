@@ -15,7 +15,6 @@ userRouter.get(
 
 userRouter.post(
     '',
-    validarUsuarioCriacao,
     (req, res) => UserController.store(req, res)
 );
 

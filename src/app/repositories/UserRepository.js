@@ -1,6 +1,7 @@
 import db from '../database/connection.js';
 import DBAsyncHelpers from '../database/helpers/DBAsyncHelpers.js';
 import buildInsertQuery from '../database/helpers/buildInsertQuery.js';
+import buildUpdateQuery from '../database/helpers/buildUpdateQuery.js'
 
 class UserRepository {
 
@@ -115,7 +116,7 @@ class UserRepository {
         active
       FROM users
       WHERE email = ?
-      AND deletado = FALSE;
+      AND deleted = FALSE;
     `;
     return DBAsyncHelpers.get({
       db,
@@ -128,7 +129,7 @@ class UserRepository {
   async updatePassword(hashPassword, id) {
     const sql = `
       UPDATE users 
-      SET senha = ? 
+      SET password = ? 
       WHERE id = ?;
     `;
     return DBAsyncHelpers.run({
@@ -140,7 +141,7 @@ class UserRepository {
   };
 
   async update(user, id) {
-    const userData = buildInsertQuery(user);
+    const userData = buildUpdateQuery(user);
 
     const sql = `
       UPDATE users 

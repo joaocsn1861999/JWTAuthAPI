@@ -51,20 +51,26 @@ class UserService {
     limit = parseInt(limit, 10) || 5;
     const offset = (page - 1) * limit;
     const users = await UserRepository.findAllWithPagination( name, limit, offset );
-    if (!users) throw new Error('Erro ao buscar usuários com paginação');
+    if (!users || users.length === 0) throw new Error('Erro ao buscar usuários com paginação');
 
     const total = await UserRepository.count(name);
-    if (!total) throw new Error('Erro ao contar usuários');
+    if (!total || total === 0) throw new Error('Erro ao contar usuários');
 
     return {
       users: users,
-      total: total,
+      pagination: {
+        total: total,
+        pages: Math.ceil(total / limit),
+        current_page: page,
+        limit: limit,
+      },
     };
   };
   
   async findById(id) {
     //Criar middleware para fazer a validação
-    if (!isNaN(id)) throw new Error('ID do usuário é obrigatório');
+    const parsedID = parseInt(id, 10);
+    if (!isNaN(parsedID) || parsedID < 1) throw new Error('ID do usuário é obrigatório');
 
     const user = await UserRepository.findById(id);
     if (!user) throw new Error('Usuário não encontrado');
@@ -74,8 +80,9 @@ class UserService {
 
   async updateUser(user, id) {
     //Criar middleware para fazer a validação
-    if (!isNaN(id)) throw new Error('ID do usuário é obrigatório');
-    if (!user.first_name || !user.last_name || !user.email) throw new Error('Nome, sobrenome e e-mail são obrigatórios');
+    const parsedID = parseInt(id, 10);
+    if (!isNaN(parsedID) || parsedID < 1) throw new Error('ID do usuário é obrigatório');
+    if (!user.first_name || !user.last_name || !user.email || !user.password) throw new Error('Nome, sobrenome e e-mail são obrigatórios');
     
     const result = await UserRepository.update(user, id);
     if (!result) throw new Error('Erro ao atualizar usuário');
@@ -88,7 +95,8 @@ class UserService {
 
   async updatePassword(id, currentPassword, newPassword) {
     //criar middleware para fazer a validação
-    if (!isNaN(id)) throw new Error('ID do usuário é obrigatório');
+    const parsedID = parseInt(id, 10);
+    if (!isNaN(parsedID) || parsedID < 1) throw new Error('ID do usuário é obrigatório');
     if (!currentPassword || !newPassword) throw new Error('Senha atual e nova senha são obrigatórias');
     if (currentPassword === newPassword) throw new Error('A nova senha não pode ser igual à senha atual');
     const hasUpperCase = /[A-Z]/.test(newPassword);
@@ -105,27 +113,27 @@ class UserService {
     
     const user = await UserRepository.findByIdWithPassword(id);
     if (!user) throw new Error('Usuário não encontrado');
-
-    const sendedHashedPassword = currentPassword;
-    const passwordsMatch = await bcrypt.compare(user.password, sendedHashedPassword);
+    
+    const passwordsMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordsMatch) throw new Error('Senha atual incorreta');
     
     const newHashPassword = await bcrypt.hash(newPassword, 10);
     const result = await UserRepository.updatePassword(newHashPassword, id);    
     if (!result) throw new Error('Erro ao atualizar senha');
-
-    return result;
+    
+    return;
   };
 
   async deleteUser(id, deletedBy) {
     //Criar middleware para fazer a validação
-    if (!isNaN(id)) throw new Error('ID do usuário é obrigatório');
+    const parsedID = parseInt(id, 10);
+    if (!isNaN(parsedID) || parsedID < 1) throw new Error('ID do usuário é obrigatório');
     if (!deletedBy) throw new Error('ID do usuário que está deletando é obrigatório');
     
     const result = await UserRepository.softDelete(id, deletedBy);
     if (!result) throw new Error('Erro ao deletar usuário');
 
-    return result;
+    return;
   };
 
 }

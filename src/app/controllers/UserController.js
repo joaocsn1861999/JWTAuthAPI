@@ -14,9 +14,7 @@ class UserController {
             ...result
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 
@@ -28,9 +26,7 @@ class UserController {
             user: user
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 
@@ -42,9 +38,7 @@ class UserController {
             user: user
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 
@@ -56,9 +50,7 @@ class UserController {
             user: user
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 
@@ -73,9 +65,7 @@ class UserController {
             message: 'Senha alterada com sucesso'
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 
@@ -88,9 +78,7 @@ class UserController {
             message: 'Usuário deletado com sucesso'
         });
     } catch (error) {
-        return res.status(500).json({
-            error: error.message
-        });
+        next(error);
     }
   }
 }

@@ -19,7 +19,7 @@ class UserRepository {
       params: userData.values,
       rejectMessage: 'Erro ao criar usuário',
     });
-  }
+  };
 
   async findAllWithPagination(name, limit, offset) {
     const sql = `
@@ -45,7 +45,7 @@ class UserRepository {
       params: [nameFilter, limit, offset],
       rejectMessage: 'Erro ao buscar usuários com paginação',
     });
-  }
+  };
 
   async count(name) {
     const sql = `
@@ -61,7 +61,7 @@ class UserRepository {
       params: [nameFilter],
       rejectMessage: 'Erro ao contar usuários',
     });
-  }
+  };
 
   async findById(id) {
     const sql = `
@@ -84,7 +84,7 @@ class UserRepository {
       params: [id],
       rejectMessage: 'Erro ao buscar usuário por ID',
     });
-  }
+  };
 
   async findByIdWithPassword(id) {
     const sql = `
@@ -102,9 +102,9 @@ class UserRepository {
       db,
       sql,
       params: [id],
-      rejectMessage: 'Erro ao busar usuário por ID com senha',
+      rejectMessage: 'Erro ao buscar usuário por ID com senha',
     });
-  }
+  };
 
   async findByEmailWithPassword(email) {
     const sql = `
@@ -122,9 +122,26 @@ class UserRepository {
       db,
       sql,
       params: [email],
-      rejectMessage: 'Erro ao busar usuário por email com senha',
+      rejectMessage: 'Erro ao buscar usuário por email com senha',
     });
-  }
+  };
+
+  async checkIfEmailExists(email) {
+    const sql = `
+      SELECT
+        id,
+        email,
+        deleted
+      FROM users
+      WHERE email = ?;
+    `;
+    return DBAsyncHelpers.get({
+      db,
+      sql,
+      params: [email],
+      rejectMessage: 'Erro ao buscar usuário',
+    });
+  };
 
   async updatePassword(hashPassword, id) {
     const sql = `

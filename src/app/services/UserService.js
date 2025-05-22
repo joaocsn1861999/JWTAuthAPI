@@ -32,7 +32,7 @@ class UserService {
   async findAllWithPagination(name, page, limit) {
     const offset = (page - 1) * limit;
     const users = await UserRepository.findAllWithPagination( name, limit, offset );
-    if (!users || users.length === 0) throw new AppError('Erro ao buscar usuários com paginação', 500);
+    if (!users || users.length === 0) throw new AppError('Nenhum usuário encontrado', 404);
 
     const countResult = await UserRepository.count(name);
     if (!countResult.total || countResult.total === 0) throw new AppError('Erro ao contar usuários', 500);

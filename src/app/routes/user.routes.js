@@ -5,32 +5,32 @@ const userRouter = Router();
 
 userRouter.get(
     '',
-    (req, res) => UserController.index(req, res)
+    (req, res, next) => UserController.index(req, res, next)
 );
 
 userRouter.get(
     '/:id',
-    (req, res) => UserController.show(req, res)
+    (req, res, next) => UserController.show(req, res, next)
 );
 
 userRouter.post(
     '',
-    (req, res) => UserController.store(req, res)
+    (req, res, next) => UserController.store(req, res, next)
 );
 
 userRouter.patch(
-    '/:id/password',
-    (req, res) => UserController.changePassword(req, res)
+    '/me/password',
+    (req, res, next) => UserController.changePassword(req, res, next)
 );
 
 userRouter.patch(
     '/:id',
-    (req, res) => UserController.update(req, res)
+    (req, res, next) => UserController.update(req, res, next)
 );
 
 userRouter.delete(
     '/:id',
-    (req, res) => UserController.destroy(req, res)
+    (req, res, next) => UserController.destroy(req, res, next)
 );
 
 export default userRouter;

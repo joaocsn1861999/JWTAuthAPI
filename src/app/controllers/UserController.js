@@ -3,7 +3,7 @@ import UserValidators from '../utils/validators/UserValidators.js';
 
 class UserController {
 
-  async index(req, res) {
+  async index(req, res, next) {
     try {
         const name = typeof req.query.name === 'string' ? name : '';
         const page = Number(req.query.page) || 1;
@@ -19,9 +19,10 @@ class UserController {
     }
   }
 
-  async show(req, res) {
+  async show(req, res, next) {
     try {
-        const idValidation = UserValidators.isValidId(req.params.id);
+        const id = req.params.id;
+        const idValidation = UserValidators.isValidId(id);
         if (!idValidation.isValid) {
             return res.status(400).json({
                 message: 'ID inválido',
@@ -29,7 +30,7 @@ class UserController {
             });
         }
 
-        const user = await UserService.findById(req.params.id);
+        const user = await UserService.findById(id);
         return res.status(200).json({
             message: 'Usuário encontrado com sucesso',
             user: user
@@ -39,7 +40,7 @@ class UserController {
     }
   }
 
-  async store(req, res) {
+  async store(req, res, next) {
     try {
         const userValidation = UserValidators.isValidUserToCreate(req.body);
         if (!userValidation.isValid) {
@@ -59,11 +60,11 @@ class UserController {
     }
   }
 
-  async update(req, res) {
+  async update(req, res, next) {
     try {
         const userData = req.body;
         const userId = req.params.id;
-        const userValidation = UserValidators.isValidUserToUpdate({userId, ...userData});
+        const userValidation = UserValidators.isValidUserToUpdate({id: userId, ...userData});
         if (!userValidation.isValid) {
             return res.status(400).json({
                 message: 'Dados do usuário inválidos',
@@ -81,7 +82,7 @@ class UserController {
     }
   }
 
-  async changePassword(req, res) {
+  async changePassword(req, res, next) {
     try {
         const id = req.user.id;
         const {currentPassword, newPassword} = req.body;
@@ -106,7 +107,7 @@ class UserController {
     }
   }
 
-  async destroy(req, res) {
+  async destroy(req, res, next) {
     try {
         const id = req.params.id;
         const idValidation = UserValidators.isValidId(id);

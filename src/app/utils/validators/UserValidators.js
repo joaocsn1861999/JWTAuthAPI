@@ -1,4 +1,5 @@
 class UserValidators {
+  
   isValidId(id) {
     return !isNaN(Number(id)) && Number(id) > 0 ?
         { isValid: true } :
@@ -51,11 +52,11 @@ class UserValidators {
         errors.push('A senha não pode ser atualizada aqui');
     };
     if (
-        !userData.first_name &&
-        !userData.last_name &&
-        !userData.email &&
-        !userData.is_admin &&
-        !userData.active
+        !user.first_name &&
+        !user.last_name &&
+        !user.email &&
+        !user.is_admin &&
+        !user.active
     ) {
         errors.push('Nenhum campo foi atualizado');
       }
@@ -102,7 +103,7 @@ class UserValidators {
     if (!currentPassword || !newPassword) errors.push('Senha atual e nova senha são obrigatórias');
     if (currentPassword === newPassword) errors.push('A nova senha não pode ser igual à senha atual');
     
-    const passwordValidation = this.isValidPassword(user.password);
+    const passwordValidation = this.isValidPassword(newPassword);
     if (!passwordValidation.isValid) errors.push(...passwordValidation.errors);
     
     return errors.length === 0 ?
@@ -118,4 +119,4 @@ class UserValidators {
   }
 }
 
-export default UserValidators;
+export default new UserValidators;

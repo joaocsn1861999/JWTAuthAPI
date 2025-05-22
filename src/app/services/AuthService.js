@@ -1,7 +1,7 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import UserService from './UserService.js';
+import UserRepository from '../repositories/UserRepository.js';
 import AppError from '../utils/AppError.js';
 
 dotenv.config({ path: './.env' });
@@ -19,7 +19,7 @@ class AuthService {
   }
 
   async login(email, password) {
-    const user = UserService.findByEmailWithPassword(email);
+    const user = await UserRepository.findByEmailWithPassword(email);
     if (!user) throw new AppError('Usuário não encontrado', 404);
     if (!user.active) throw new AppError('Usuário inativo', 403);
 

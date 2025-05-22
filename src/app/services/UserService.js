@@ -5,8 +5,11 @@ import AppError from '../utils/AppError.js';
 class UserService {
 
   async createUser(user) {
-    const userExists = await UserRepository.findByEmailWithPassword(user.email);
-    if (userExists) throw new AppError('E-mail já está em uso', 409);
+    const userExists = await UserRepository.checkIfEmailExists(user.email);
+    if (userExists) throw new AppError(
+      `E-mail já está em uso para um usuário ${userExists.deleted ? 'deletado' : 'ativo'}`,
+      409
+    );
 
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = {

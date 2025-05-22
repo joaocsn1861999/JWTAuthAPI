@@ -5,9 +5,12 @@ class UserController {
 
   async index(req, res, next) {
     try {
-        const name = typeof req.query.name === 'string' ? name : '';
-        const page = Number(req.query.page) || 1;
-        const limit = Number(req.query.limit) || 5;
+        let page = Number(req.query.page);
+        page = isNaN(page) || page < 1 ? 1 : page;
+        let limit = Number(req.query.limit) || 5;
+        limit = isNaN(limit) || limit < 1 ? 5 : limit;
+        let name = req.query.name;
+        name = UserValidators.isValidName(name).isValid ? name : '';
 
         const result = await UserService.findAllWithPagination(name, page, limit);
         return res.status(200).json({

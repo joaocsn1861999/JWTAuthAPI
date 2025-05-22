@@ -116,7 +116,8 @@ class UserRepository {
         active
       FROM users
       WHERE email = ?
-      AND deleted = FALSE;
+      AND deleted = FALSE
+      and active = TRUE;
     `;
     return DBAsyncHelpers.get({
       db,

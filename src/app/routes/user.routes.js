@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import UserController from '../controllers/UserController.js';
+import adminUserCheck from '../middlewares/adminUserCheck.js';
 
 const userRouter = Router();
 
@@ -15,21 +16,25 @@ userRouter.get(
 
 userRouter.post(
     '',
+    adminUserCheck,
     (req, res, next) => UserController.store(req, res, next)
 );
 
 userRouter.patch(
     '/me/password',
+    adminUserCheck,
     (req, res, next) => UserController.changePassword(req, res, next)
 );
 
 userRouter.patch(
     '/:id',
+    adminUserCheck,
     (req, res, next) => UserController.update(req, res, next)
 );
 
 userRouter.delete(
     '/:id',
+    adminUserCheck,
     (req, res, next) => UserController.destroy(req, res, next)
 );
 

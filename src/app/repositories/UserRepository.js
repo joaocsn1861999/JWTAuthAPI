@@ -63,6 +63,51 @@ class UserRepository {
     });
   };
 
+  async countActiveUsers() {
+    const sql = `
+      SELECT COUNT(*) AS total_active
+      FROM users
+      WHERE deleted = FALSE
+      AND active = TRUE;
+    `;
+    return DBAsyncHelpers.get({
+      db,
+      sql,
+      params: [nameFilter],
+      rejectMessage: 'Erro ao contar usuários',
+    });
+  };
+
+  async countAdminUsers() {
+    const sql = `
+      SELECT COUNT(*) AS total_admin
+      FROM users
+      WHERE deleted = FALSE
+      AND is_admin = TRUE;
+    `;
+    return DBAsyncHelpers.get({
+      db,
+      sql,
+      params: [nameFilter],
+      rejectMessage: 'Erro ao contar usuários',
+    });
+  };
+
+  async countInactiveUsers() {
+    const sql = `
+      SELECT COUNT(*) AS total_admin
+      FROM users
+      WHERE deleted = FALSE
+      AND active = FALSE;
+    `;
+    return DBAsyncHelpers.get({
+      db,
+      sql,
+      params: [nameFilter],
+      rejectMessage: 'Erro ao contar usuários',
+    });
+  };
+
   async findById(id) {
     const sql = `
       SELECT

@@ -82,10 +82,10 @@ class UserController {
     }
   }
 
-  async update(req, res, next) {
+  async update(req, res, next, me) {
     try {
         const userData = req.body;
-        const userId = req.user.id;
+        const userId = me ? req.user.id : req.params.id;
         const userValidation = UserValidators.isValidUserToUpdate({id: userId, ...userData});
         if (!userValidation.isValid) {
             return res.status(400).json({
@@ -135,29 +135,9 @@ class UserController {
     }
   }
 
-  async destroyMySelf(req, res, next) {
+  async destroy(req, res, next, me) {
     try {
-        const id = req.user.id;
-        const idValidation = UserValidators.isValidId(id);
-        if (!idValidation.isValid) {
-            return res.status(400).json({
-                message: 'ID inválido',
-                errors: idValidation.errors
-            });
-        };
-
-        await UserService.deleteUser(id, req.user.id);
-        return res.status(200).json({
-            message: 'Usuário deletado com sucesso'
-        });
-    } catch (error) {
-        next(error);
-    }
-  }
-
-  async destroy(req, res, next) {
-    try {
-        const id = req.params.id;
+        const id = me ? req.user.id : req.params.id;
         const idValidation = UserValidators.isValidId(id);
         if (!idValidation.isValid) {
             return res.status(400).json({

@@ -47,6 +47,22 @@ class UserService {
       },
     };
   };
+
+  async countAll() {
+    const [all, isAdmin, active, notActive] = await Promise.all([
+      UserRepository.count(),
+      UserRepository.count({is_admin: true, active: null}),
+      UserRepository.count({active: true, is_admin: null}),
+      UserRepository.count({active: false, is_admin: null}),
+    ]);
+
+    return {
+      total: all.total,
+      is_admin: isAdmin.total,
+      active: active.total,
+      not_active: notActive.total,
+    };
+  }
   
   async findById(id) {
     const user = await UserRepository.findById(id);

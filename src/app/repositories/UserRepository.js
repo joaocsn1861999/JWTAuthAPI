@@ -21,7 +21,20 @@ class UserRepository {
     });
   };
 
-  async findAllWithPagination(name, limit, offset) {
+  async findAllWithPagination(limit, offset, filters = {}) {
+    let conditions = ['deleted = FALSE', 'first_name LIKE ?'];
+    let params = [`%${filters.name}%`];
+    if (filters.active !== null) {
+      conditions.push('active = ?');
+      params.push(filters.active);
+    }
+    if (filters.is_admin !== null) {
+      conditions.push('is_admin = ?');
+      params.push(filters.is_admin);
+    }
+
+    params.push(limit, offset);
+    
     const sql = `
       SELECT
         id,
@@ -33,77 +46,40 @@ class UserRepository {
         created_at,
         updated_at
       FROM users 
-      WHERE deleted = FALSE 
-      AND first_name LIKE ?
+      WHERE ${conditions.join(' AND ')}
       LIMIT ? 
       OFFSET ?;
     `;
-    const nameFilter = `%${name}%`;
     return DBAsyncHelpers.all({
       db,
       sql,
-      params: [nameFilter, limit, offset],
+      params: params,
       rejectMessage: 'Erro ao buscar usuários com paginação',
     });
   };
 
-  async count(name) {
+  async count(filters = {}) {
+    let conditions = ['deleted = FALSE', 'first_name LIKE ?'];
+    let params = [`%${filters.name}%`];
+    if (filters.active !== null) {
+      conditions.push('active = ?');
+      params.push(filters.active);
+    }
+    if (filters.is_admin !== null) {
+      conditions.push('is_admin = ?');
+      params.push(filters.is_admin);
+    }
+
     const sql = `
       SELECT COUNT(*) AS total
       FROM users
-      WHERE deleted = FALSE
-      AND first_name LIKE ?;
+      WHERE ${conditions.join(' AND ')};
     `;
     const nameFilter = `%${name}%`;
     return DBAsyncHelpers.get({
       db,
       sql,
-      params: [nameFilter],
-      rejectMessage: 'Erro ao contar usuários',
-    });
-  };
-
-  async countActiveUsers() {
-    const sql = `
-      SELECT COUNT(*) AS total_active
-      FROM users
-      WHERE deleted = FALSE
-      AND active = TRUE;
-    `;
-    return DBAsyncHelpers.get({
-      db,
-      sql,
-      params: [nameFilter],
-      rejectMessage: 'Erro ao contar usuários',
-    });
-  };
-
-  async countAdminUsers() {
-    const sql = `
-      SELECT COUNT(*) AS total_admin
-      FROM users
-      WHERE deleted = FALSE
-      AND is_admin = TRUE;
-    `;
-    return DBAsyncHelpers.get({
-      db,
-      sql,
-      params: [nameFilter],
-      rejectMessage: 'Erro ao contar usuários',
-    });
-  };
-
-  async countInactiveUsers() {
-    const sql = `
-      SELECT COUNT(*) AS total_admin
-      FROM users
-      WHERE deleted = FALSE
-      AND active = FALSE;
-    `;
-    return DBAsyncHelpers.get({
-      db,
-      sql,
-      params: [nameFilter],
+      params: params,
       rejectMessage: 'Erro ao contar usuários',
     });
   };

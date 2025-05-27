@@ -5,14 +5,15 @@ class UserController {
 
   async index(req, res, next) {
     try {
-        let page = Number(req.query.page);
-        page = isNaN(page) || page < 1 ? 1 : page;
-        let limit = Number(req.query.limit) || 5;
-        limit = isNaN(limit) || limit < 1 ? 5 : limit;
-        let name = req.query.name;
+        let {page, limit, name, active, is_admin} = req.query;
+        page = isNaN(Number(page)) || page < 1 ? 1 : page;
+        limit = isNaN(Number(limit)) || limit < 1 ? 5 : limit;
         name = UserValidators.isValidName(name).isValid ? name : '';
+        active = typeof active === 'boolean' ? active : null;
+        is_admin = typeof is_admin === 'boolean' ? is_admin : null;
+        const filters = { name, active, is_admin };
 
-        const result = await UserService.findAllWithPagination(name, page, limit);
+        const result = await UserService.findAllWithPagination(page, limit, filters);
         return res.status(200).json({
             message: 'Usuários encontrados com sucesso',
             ...result

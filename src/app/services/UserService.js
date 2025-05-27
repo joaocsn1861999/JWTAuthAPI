@@ -29,12 +29,12 @@ class UserService {
     return userCreated;
   };
 
-  async findAllWithPagination(name, page, limit) {
+  async findAllWithPagination(page, limit, filters) {
     const offset = (page - 1) * limit;
-    const users = await UserRepository.findAllWithPagination( name, limit, offset );
+    const users = await UserRepository.findAllWithPagination(limit, offset, filters);
     if (!users || users.length === 0) throw new AppError('Nenhum usuário encontrado', 404);
 
-    const countResult = await UserRepository.count(name);
+    const countResult = await UserRepository.count(filters);
     if (!countResult.total || countResult.total === 0) throw new AppError('Erro ao contar usuários', 500);
 
     return {

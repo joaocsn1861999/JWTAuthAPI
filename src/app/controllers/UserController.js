@@ -129,6 +129,26 @@ class UserController {
     }
   }
 
+  async destroyMySelf(req, res, next) {
+    try {
+        const id = req.user.id;
+        const idValidation = UserValidators.isValidId(id);
+        if (!idValidation.isValid) {
+            return res.status(400).json({
+                message: 'ID inválido',
+                errors: idValidation.errors
+            });
+        };
+
+        await UserService.deleteUser(id, req.user.id);
+        return res.status(200).json({
+            message: 'Usuário deletado com sucesso'
+        });
+    } catch (error) {
+        next(error);
+    }
+  }
+
   async destroy(req, res, next) {
     try {
         const id = req.params.id;

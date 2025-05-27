@@ -12,11 +12,11 @@ class UserController {
         if (active) {
             active = active.toLowerCase() === 'true' ? true :
                      active.toLowerCase() === 'false' ? false : null;
-        }
+        };
         if (is_admin) {
             is_admin = is_admin.toLowerCase() === 'true' ? true :
                        is_admin.toLowerCase() === 'false' ? false : null;
-        }
+        };
         const filters = { name, active, is_admin };
 
         const result = await UserService.findAllWithPagination(page, limit, filters);
@@ -38,7 +38,7 @@ class UserController {
                 message: 'ID inválido',
                 errors: idValidation.errors
             });
-        }
+        };
 
         const user = await UserService.findById(id);
         return res.status(200).json({
@@ -70,7 +70,7 @@ class UserController {
                 message: 'Usuário inválido',
                 errors: userValidation.errors
             });
-        }
+        };
 
         const user = await UserService.createUser(req.body);
         return res.status(201).json({
@@ -85,14 +85,14 @@ class UserController {
   async update(req, res, next) {
     try {
         const userData = req.body;
-        const userId = req.params.id;
+        const userId = req.user.id;
         const userValidation = UserValidators.isValidUserToUpdate({id: userId, ...userData});
         if (!userValidation.isValid) {
             return res.status(400).json({
                 message: 'Dados do usuário inválidos',
                 errors: userValidation.errors
             });
-        }
+        };
 
         const user = await UserService.updateUser(userData, userId);
         return res.status(200).json({
@@ -114,7 +114,7 @@ class UserController {
                 message: 'Falha ao validar senha',
                 errors: passwordValidation.errors
             });
-        }
+        };
 
         await UserService.updatePassword(
             id,
@@ -138,7 +138,7 @@ class UserController {
                 message: 'ID inválido',
                 errors: idValidation.errors
             });
-        }
+        };
 
         await UserService.deleteUser(id, req.user.id);
         return res.status(200).json({

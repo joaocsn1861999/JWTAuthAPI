@@ -32,7 +32,7 @@ userRouter.patch(
 );
 
 userRouter.patch(
-    '/:id',
+    '/me',
     adminUserCheck,
     (req, res, next) => UserController.update(req, res, next)
 );

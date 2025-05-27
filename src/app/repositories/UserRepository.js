@@ -22,8 +22,12 @@ class UserRepository {
   };
 
   async findAllWithPagination(limit, offset, filters = {}) {
-    let conditions = ['deleted = FALSE', 'first_name LIKE ?'];
-    let params = [`%${filters.name}%`];
+    let conditions = ['deleted = FALSE'];
+    let params = [];
+    if (filters.name) {
+      conditions = ['first_name LIKE ?'];
+      params.push(`%${filters.name}%`);
+    }
     if (filters.active !== null) {
       conditions.push('active = ?');
       params.push(filters.active);
@@ -59,8 +63,12 @@ class UserRepository {
   };
 
   async count(filters = {}) {
-    let conditions = ['deleted = FALSE', 'first_name LIKE ?'];
-    let params = [`%${filters.name}%`];
+    let conditions = ['deleted = FALSE'];
+    let params = [];
+    if (filters.name) {
+      conditions = ['first_name LIKE ?'];
+      params.push(`%${filters.name}%`);
+    }
     if (filters.active !== null) {
       conditions.push('active = ?');
       params.push(filters.active);
@@ -75,7 +83,6 @@ class UserRepository {
       FROM users
       WHERE ${conditions.join(' AND ')};
     `;
-    const nameFilter = `%${name}%`;
     return DBAsyncHelpers.get({
       db,
       sql,

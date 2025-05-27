@@ -5,12 +5,18 @@ class UserController {
 
   async index(req, res, next) {
     try {
-        let {page, limit, name, active, is_admin} = req.query;
+        let {page, limit, name, active = null, is_admin = null} = req.query;
         page = isNaN(Number(page)) || page < 1 ? 1 : page;
         limit = isNaN(Number(limit)) || limit < 1 ? 5 : limit;
         name = UserValidators.isValidName(name).isValid ? name : '';
-        active = typeof active === 'boolean' ? active : null;
-        is_admin = typeof is_admin === 'boolean' ? is_admin : null;
+        if (active) {
+            active = active.toLowerCase() === 'true' ? true :
+                     active.toLowerCase() === 'false' ? false : null;
+        }
+        if (is_admin) {
+            is_admin = is_admin.toLowerCase() === 'true' ? true :
+                       is_admin.toLowerCase() === 'false' ? false : null;
+        }
         const filters = { name, active, is_admin };
 
         const result = await UserService.findAllWithPagination(page, limit, filters);

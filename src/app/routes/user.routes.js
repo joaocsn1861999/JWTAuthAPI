@@ -10,6 +10,11 @@ userRouter.get(
 );
 
 userRouter.get(
+    '/count',
+    (req, res, next) => UserController.count(req, res, next)
+);
+
+userRouter.get(
     '/:id',
     (req, res, next) => UserController.show(req, res, next)
 );

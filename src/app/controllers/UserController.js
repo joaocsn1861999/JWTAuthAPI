@@ -50,6 +50,18 @@ class UserController {
     }
   }
 
+  async count(req, res, next) {
+    try {
+        const count = await UserService.countAll();
+        return res.status(200).json({
+            message: 'Contagem de usuários realizada com sucesso',
+            count: count
+        });
+    } catch (error) {
+        next(error);
+    }
+  }
+
   async store(req, res, next) {
     try {
         const userValidation = UserValidators.isValidUserToCreate(req.body);

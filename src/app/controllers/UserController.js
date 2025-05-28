@@ -72,6 +72,9 @@ class UserController {
             });
         };
 
+        req.body.is_admin = !req.user ? false :
+          req.user.is_admin ? req.body.is_admin : false;
+
         const user = await UserService.createUser(req.body);
         return res.status(201).json({
             message: 'Usuário cadastrado com sucesso',

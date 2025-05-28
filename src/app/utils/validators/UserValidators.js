@@ -8,7 +8,7 @@ class UserValidators {
 
   isValidName(name) {
     const nameRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
-    const isValidLength = name.length > 1 && name.length <= 50;
+    const isValidLength = name ? name.length > 1 && name.length <= 50 : false;
 
     return nameRegex.test(name) && isValidLength ?
         { isValid: true } :

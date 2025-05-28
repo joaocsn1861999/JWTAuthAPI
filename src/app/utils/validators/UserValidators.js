@@ -55,8 +55,8 @@ class UserValidators {
         !user.first_name &&
         !user.last_name &&
         !user.email &&
-        !user.is_admin &&
-        !user.active
+        !typeof user.is_admin === 'boolean' &&
+        !typeof user.active === 'boolean'
     ) {
         errors.push('Nenhum campo foi atualizado');
       }

@@ -97,7 +97,7 @@ class UserController {
             });
         };
 
-        if (userData.is_admin || !req.user.is_admin) {
+        if (typeof userData.is_admin === 'boolean' && !req.user.is_admin) {
             return res.status(403).json({
                 message: 'Você não tem permissão para alterar o status de administrador'
             });

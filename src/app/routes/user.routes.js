@@ -37,27 +37,27 @@ userRouter.patch(
 userRouter.patch(
     '/me',
     tokenValidator,
-    (req, res, next) => UserController.update(req, res, next, me = true)
+    (req, res, next) => UserController.update(req, res, next, true)
 );
 
 userRouter.patch(
     '/:id',
     tokenValidator,
     adminUserCheck,
-    (req, res, next) => UserController.update(req, res, next, me = false)
+    (req, res, next) => UserController.update(req, res, next, false)
 );
 
 userRouter.delete(
     '/me',
     tokenValidator,
-    (req, res, next) => UserController.destroy(req, res, next, me = true)
+    (req, res, next) => UserController.destroy(req, res, next, true)
 );
 
 userRouter.delete(
     '/:id',
     tokenValidator,
     adminUserCheck,
-    (req, res, next) => UserController.destroy(req, res, next, me = false)
+    (req, res, next) => UserController.destroy(req, res, next, false)
 );
 
 export default userRouter;

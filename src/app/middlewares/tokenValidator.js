@@ -15,9 +15,11 @@ export default function tokenValidator(req, res, next) {
       token.split(" ")[1],
       process.env.JWT_SECRET
     );
+
+    const isAdmin = decoded.is_admin === 1 ? true : false;
     req.user = {
       id: decoded.id,
-      is_admin: decoded.is_admin
+      is_admin: isAdmin
     };
     next();
   } catch (error) {

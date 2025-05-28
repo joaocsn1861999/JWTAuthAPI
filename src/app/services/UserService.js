@@ -10,8 +10,7 @@ class UserService {
       `E-mail já está em uso para um usuário ${userExists.deleted ? 'deletado' : 'ativo'}`,
       409
     );
-
-    if (!req.user.is_admin) user.is_admin = false;
+    
     const hashedPassword = await bcrypt.hash(user.password, 10);
     const newUser = {
       first_name: user.first_name,

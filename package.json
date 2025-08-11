@@ -5,6 +5,8 @@
     "createDB": "node ./src/app/database/createTables.js"
   },
   "dependencies": {
+    "awilix": "^12.0.5",
+    "awilix-express": "^9.0.2",
     "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

@@ -3,6 +3,8 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import appRouter from './app.routes.js';
 import errorHandler from './app/middlewares/errorHandler.js'
+import { scopePerRequest } from 'awilix-express';
+import container from './container.js';
 
 dotenv.config({ path:'./.env' });
 
@@ -12,6 +14,7 @@ app.use(express.json());
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN,
 }));
+app.use(scopePerRequest(container));
 app.use('/api/v1', appRouter);
 app.use(errorHandler);
 

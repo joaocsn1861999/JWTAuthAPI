@@ -1,11 +1,13 @@
-import AuthService from '../services/AuthService.js';
+export default class LoginController {
 
-class LoginController {
+  constructor ({authService}) {
+    this.authService = authService;
+  };
 
   async login(req, res, next) {
     try {
       const { email, password } = req.body;
-      const token = await AuthService.login(email, password);
+      const token = await this.authService.login(email, password);
       if (!token) {
         return res.status(401).json({
           falha: 'Falha na autenticação'
@@ -19,7 +21,6 @@ class LoginController {
     } catch (error) {
         next(error);
     };
-  }
-};
+  };
 
-export default new LoginController();
+};

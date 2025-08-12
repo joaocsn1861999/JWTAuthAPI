@@ -1,4 +1,4 @@
-class DBAsyncHelpers {
+export default class DBAsyncHelpers {
   async run({ db, sql, params = [], rejectMessage }) {
     return new Promise((resolve, reject) => {
       db.run(sql, params, function (error) {
@@ -10,7 +10,7 @@ class DBAsyncHelpers {
         return resolve(result);
       });
     });
-  }
+  };
 
   async get({ db, sql, params = [], rejectMessage }) {
     return new Promise((resolve, reject) => {
@@ -21,7 +21,7 @@ class DBAsyncHelpers {
         return resolve(parsedResult);
       });
     });
-  }
+  };
 
   async all({ db, sql, params = [], rejectMessage }) {
     return new Promise((resolve, reject) => {
@@ -32,7 +32,6 @@ class DBAsyncHelpers {
         return resolve(parsedResult);
       });
     });
-  }
-}
+  };
 
-export default new DBAsyncHelpers();
+};

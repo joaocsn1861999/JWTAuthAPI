@@ -1,10 +1,10 @@
-class UserValidators {
+export default class UserValidators {
   
   isValidId(id) {
     return !isNaN(Number(id)) && Number(id) > 0 ?
         { isValid: true } :
         { isValid: false, errors: ['ID inválido'] };
-  }
+  };
 
   isValidName(name) {
     const nameRegex = /^[a-zA-ZÀ-ÿ\s]+$/;
@@ -13,7 +13,7 @@ class UserValidators {
     return nameRegex.test(name) && isValidLength ?
         { isValid: true } :
         { isValid: false, errors: ['Nome inválido'] };
-  }
+  };
 
   isValidUserToCreate(user) {
     const errors = [];
@@ -30,7 +30,7 @@ class UserValidators {
     return errors.length === 0 ?
         { isValid: true } :
         { isValid: false, errors };
-  }
+  };
 
   isValidUserToUpdate(user) {
     const errors = [];
@@ -59,7 +59,7 @@ class UserValidators {
         !typeof user.active === 'boolean'
     ) {
         errors.push('Nenhum campo foi atualizado');
-      }
+      };
     if (
         user.created_at ||
         user.updated_at ||
@@ -70,12 +70,12 @@ class UserValidators {
         errors.push(
           'Os campos created_at, updated_at, deleted, deleted_by e deleted_at não podem ser atualizados'
         );
-    }
+    };
 
     return errors.length === 0 ?
         { isValid: true } :
         { isValid: false, errors };
-  }
+  };
 
   isValidPassword(password) {
     const hasUpperCase = /[A-Z]/.test(password);
@@ -96,7 +96,7 @@ class UserValidators {
     return errors.length === 0 ?
         { isValid: true } :
         { isValid: false, errors };
-  }
+  };
 
   isValidPasswordChange(currentPassword, newPassword) {
     const errors = [];
@@ -109,14 +109,13 @@ class UserValidators {
     return errors.length === 0 ?
         { isValid: true } :
         { isValid: false, errors };
-  }
+  };
 
   isValidEmail(email) {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return emailRegex.test(email) ?
         { isValid: true } :
         { isValid: false, errors: ['E-mail inválido'] };
-  }
-}
+  };
 
-export default new UserValidators;
+};

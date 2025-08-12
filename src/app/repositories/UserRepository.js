@@ -1,20 +1,22 @@
-import db from '../database/connection.js';
-import DBAsyncHelpers from '../database/helpers/DBAsyncHelpers.js';
-import buildInsertQuery from '../database/helpers/buildInsertQuery.js';
-import buildUpdateQuery from '../database/helpers/buildUpdateQuery.js'
+export default class UserRepository {
 
-class UserRepository {
+  constructor ({db, dbAsyncHelpers, buildInsertQuery, buildUpdateQuery}) {
+    this.db = db;
+    this.dbAsyncHelpers = dbAsyncHelpers;
+    this.buildInsertQuery = buildInsertQuery;
+    this.buildUpdateQuery = buildUpdateQuery;
+  };
 
   async create(user) {
-    const userData = buildInsertQuery(user);
+    const userData = this.buildInsertQuery(user);
     const sql = `
       INSERT
       INTO users (${userData.fields})
       VALUES (${userData.placeholders})
     `;
 
-    return DBAsyncHelpers.run({
-      db,
+    return this.dbAsyncHelpers.run({
+      db : this.db,
       sql,
       params: userData.values,
       rejectMessage: 'Erro ao criar usuário',
@@ -54,8 +56,8 @@ class UserRepository {
       LIMIT ? 
       OFFSET ?;
     `;
-    return DBAsyncHelpers.all({
-      db,
+    return this.dbAsyncHelpers.all({
+      db : this.db,
       sql,
       params: params,
       rejectMessage: 'Erro ao buscar usuários com paginação',
@@ -83,8 +85,8 @@ class UserRepository {
       FROM users
       WHERE ${conditions.join(' AND ')};
     `;
-    return DBAsyncHelpers.get({
-      db,
+    return this.dbAsyncHelpers.get({
+      db : this.db,
       sql,
       params: params,
       rejectMessage: 'Erro ao contar usuários',
@@ -106,8 +108,8 @@ class UserRepository {
       WHERE id = ?
       AND deleted = FALSE;
     `;
-    return DBAsyncHelpers.get({
-      db,
+    return this.dbAsyncHelpers.get({
+      db : this.db,
       sql,
       params: [id],
       rejectMessage: 'Erro ao buscar usuário por ID',
@@ -126,8 +128,8 @@ class UserRepository {
       WHERE id = ? 
       AND deleted = FALSE;
     `;
-    return DBAsyncHelpers.get({
-      db,
+    return this.dbAsyncHelpers.get({
+      db : this.db,
       sql,
       params: [id],
       rejectMessage: 'Erro ao buscar usuário por ID com senha',
@@ -147,8 +149,8 @@ class UserRepository {
       AND deleted = FALSE
       and active = TRUE;
     `;
-    return DBAsyncHelpers.get({
-      db,
+    return this.dbAsyncHelpers.get({
+      db : this.db,
       sql,
       params: [email],
       rejectMessage: 'Erro ao buscar usuário por email com senha',
@@ -164,8 +166,8 @@ class UserRepository {
       FROM users
       WHERE email = ?;
     `;
-    return DBAsyncHelpers.get({
-      db,
+    return this.dbAsyncHelpers.get({
+      db : this.db,
       sql,
       params: [email],
       rejectMessage: 'Erro ao buscar usuário',
@@ -178,8 +180,8 @@ class UserRepository {
       SET password = ? 
       WHERE id = ?;
     `;
-    return DBAsyncHelpers.run({
-      db,
+    return this.dbAsyncHelpers.run({
+      db : this.db,
       sql,
       params: [hashPassword, id],
       rejectMessage: 'Erro ao alterar senha do usuário',
@@ -187,7 +189,7 @@ class UserRepository {
   };
 
   async update(user, id) {
-    const userData = buildUpdateQuery(user);
+    const userData = this.buildUpdateQuery(user);
 
     const sql = `
       UPDATE users 
@@ -195,8 +197,8 @@ class UserRepository {
       WHERE id = ?;
     `;
 
-    return DBAsyncHelpers.run({
-      db,
+    return this.dbAsyncHelpers.run({
+      db : this.db,
       sql,
       params: [...userData.values, id],
       rejectMessage: 'Erro ao atualizar usuário',
@@ -212,13 +214,11 @@ class UserRepository {
         deleted_at = CURRENT_TIMESTAMP
       WHERE id = ?;
     `;
-    return DBAsyncHelpers.run({
-      db,
+    return this.dbAsyncHelpers.run({
+      db : this.db,
       sql,
       params: [deletedBy, id],
       rejectMessage: 'Erro ao deletar usuário',
     });
   };
-}
-
-export default new UserRepository();
+};

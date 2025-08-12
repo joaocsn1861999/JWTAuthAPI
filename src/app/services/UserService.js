@@ -1,11 +1,14 @@
-import UserRepository from '../repositories/UserRepository.js';
 import bcrypt from 'bcrypt';
 import AppError from '../utils/AppError.js';
 
-class UserService {
+export default class UserService {
+
+  constructor ({userRepository}) {
+    this.userRepository = userRepository;
+  };
 
   async createUser(user) {
-    const userExists = await UserRepository.checkIfEmailExists(user.email);
+    const userExists = await this.userRepository.checkIfEmailExists(user.email);
     if (userExists) throw new AppError(
       `E-mail já está em uso para um usuário ${userExists.deleted ? 'deletado' : 'ativo'}`,
       409
@@ -20,10 +23,10 @@ class UserService {
       is_admin: user.is_admin || false,
     };
 
-    const result = await UserRepository.create(newUser);
+    const result = await this.userRepository.create(newUser);
     if (!result) throw new AppError('Erro ao criar usuário', 500);
 
-    const userCreated = await UserRepository.findById(result.insertedID);
+    const userCreated = await this.userRepository.findById(result.insertedID);
     if (!userCreated) throw new AppError('Erro ao buscar usuário criado', 500);
 
     return userCreated;
@@ -31,10 +34,10 @@ class UserService {
 
   async findAllWithPagination(page, limit, filters) {
     const offset = (page - 1) * limit;
-    const users = await UserRepository.findAllWithPagination(limit, offset, filters);
+    const users = await this.userRepository.findAllWithPagination(limit, offset, filters);
     if (!users || users.length === 0) throw new AppError('Nenhum usuário encontrado', 404);
 
-    const countResult = await UserRepository.count(filters);
+    const countResult = await this.userRepository.count(filters);
     if (!countResult.total || countResult.total === 0) throw new AppError('Erro ao contar usuários', 500);
 
     return {
@@ -50,10 +53,10 @@ class UserService {
 
   async countAll() {
     const [all, isAdmin, active, notActive] = await Promise.all([
-      UserRepository.count(),
-      UserRepository.count({is_admin: true, active: null}),
-      UserRepository.count({active: true, is_admin: null}),
-      UserRepository.count({active: false, is_admin: null}),
+      this.userRepository.count(),
+      this.userRepository.count({is_admin: true, active: null}),
+      this.userRepository.count({active: true, is_admin: null}),
+      this.userRepository.count({active: false, is_admin: null}),
     ]);
 
     return {
@@ -62,46 +65,44 @@ class UserService {
       active: active.total,
       not_active: notActive.total,
     };
-  }
+  };
   
   async findById(id) {
-    const user = await UserRepository.findById(id);
+    const user = await this.userRepository.findById(id);
     if (!user) throw new AppError('Usuário não encontrado', 404);
 
     return user;
   };
 
   async updateUser(user, id) {
-    const result = await UserRepository.update(user, id);
+    const result = await this.userRepository.update(user, id);
     if (!result) throw new AppError('Erro ao atualizar usuário', 500);
 
-    const updatedUser = await UserRepository.findById(id);
+    const updatedUser = await this.userRepository.findById(id);
     if (!updatedUser) throw new AppError('Erro ao buscar usuário atualizado', 500);
 
     return updatedUser;
   };
 
   async updatePassword(id, currentPassword, newPassword) {    
-    const user = await UserRepository.findByIdWithPassword(id);
+    const user = await this.userRepository.findByIdWithPassword(id);
     if (!user) throw new AppError('Usuário não encontrado', 404);
     
     const passwordsMatch = await bcrypt.compare(currentPassword, user.password);
     if (!passwordsMatch) throw new AppError('Senha atual incorreta', 401);
     
     const newHashPassword = await bcrypt.hash(newPassword, 10);
-    const result = await UserRepository.updatePassword(newHashPassword, id);    
+    const result = await this.userRepository.updatePassword(newHashPassword, id);    
     if (!result) throw new AppError('Erro ao atualizar senha', 500);
     
     return;
   };
 
   async deleteUser(id, deletedBy) {    
-    const result = await UserRepository.softDelete(id, deletedBy);
+    const result = await this.userRepository.softDelete(id, deletedBy);
     if (!result) throw new AppError('Erro ao deletar usuário', 500);
 
     return;
   };
 
-}
-
-export default new UserService();
+};

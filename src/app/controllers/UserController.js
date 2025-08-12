@@ -1,14 +1,15 @@
-import UserService from '../services/UserService.js';
-import UserValidators from '../utils/validators/UserValidators.js';
-
-class UserController {
-
+export default class UserController {
+  
+  constructor ({userService, userValidators}) {
+    this.userService = userService;
+    this.userValidators = userValidators;
+  };
   async index(req, res, next) {
     try {
         let {page, limit, name, active = null, is_admin = null} = req.query;
         page = isNaN(Number(page)) || page < 1 ? 1 : page;
         limit = isNaN(Number(limit)) || limit < 1 ? 5 : limit;
-        name = UserValidators.isValidName(name).isValid ? name : '';
+        name = this.userValidators.isValidName(name).isValid ? name : '';
         if (active) {
             active = active.toLowerCase() === 'true' ? true :
                      active.toLowerCase() === 'false' ? false : null;
@@ -19,20 +20,20 @@ class UserController {
         };
         const filters = { name, active, is_admin };
 
-        const result = await UserService.findAllWithPagination(page, limit, filters);
+        const result = await this.userService.findAllWithPagination(page, limit, filters);
         return res.status(200).json({
             message: 'Usuários encontrados com sucesso',
             ...result
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async show(req, res, next) {
     try {
         const id = req.params.id;
-        const idValidation = UserValidators.isValidId(id);
+        const idValidation = this.userValidators.isValidId(id);
         if (!idValidation.isValid) {
             return res.status(400).json({
                 message: 'ID inválido',
@@ -40,31 +41,31 @@ class UserController {
             });
         };
 
-        const user = await UserService.findById(id);
+        const user = await this.userService.findById(id);
         return res.status(200).json({
             message: 'Usuário encontrado com sucesso',
             user: user
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async count(req, res, next) {
     try {
-        const count = await UserService.countAll();
+        const count = await this.userService.countAll();
         return res.status(200).json({
             message: 'Contagem de usuários realizada com sucesso',
             count: count
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async store(req, res, next) {
     try {
-        const userValidation = UserValidators.isValidUserToCreate(req.body);
+        const userValidation = this.userValidators.isValidUserToCreate(req.body);
         if (!userValidation.isValid) {
             return res.status(400).json({
                 message: 'Usuário inválido',
@@ -75,21 +76,21 @@ class UserController {
         req.body.is_admin = !req.user ? false :
           req.user.is_admin ? req.body.is_admin : false;
 
-        const user = await UserService.createUser(req.body);
+        const user = await this.userService.createUser(req.body);
         return res.status(201).json({
             message: 'Usuário cadastrado com sucesso',
             user: user
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async update(req, res, next, me) {
     try {
         const userData = req.body;
         const userId = me ? req.user.id : req.params.id;
-        const userValidation = UserValidators.isValidUserToUpdate({id: userId, ...userData});
+        const userValidation = this.userValidators.isValidUserToUpdate({id: userId, ...userData});
         if (!userValidation.isValid) {
             return res.status(400).json({
                 message: 'Dados do usuário inválidos',
@@ -103,21 +104,21 @@ class UserController {
             });
         };
 
-        const user = await UserService.updateUser(userData, userId);
+        const user = await this.userService.updateUser(userData, userId);
         return res.status(200).json({
             message: 'Usuário atualizado com sucesso',
             user: user
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async changePassword(req, res, next) {
     try {
         const id = req.user.id;
         const {currentPassword, newPassword} = req.body;
-        const passwordValidation = UserValidators.isValidPasswordChange(currentPassword, newPassword);
+        const passwordValidation = this.userValidators.isValidPasswordChange(currentPassword, newPassword);
         if (!passwordValidation.isValid) {
             return res.status(400).json({
                 message: 'Falha ao validar senha',
@@ -125,7 +126,7 @@ class UserController {
             });
         };
 
-        await UserService.updatePassword(
+        await this.userService.updatePassword(
             id,
             currentPassword,
             newPassword
@@ -135,13 +136,13 @@ class UserController {
         });
     } catch (error) {
         next(error);
-    }
-  }
+    };
+  };
 
   async destroy(req, res, next, me) {
     try {
         const id = me ? req.user.id : req.params.id;
-        const idValidation = UserValidators.isValidId(id);
+        const idValidation = this.userValidators.isValidId(id);
         if (!idValidation.isValid) {
             return res.status(400).json({
                 message: 'ID inválido',
@@ -149,14 +150,13 @@ class UserController {
             });
         };
 
-        await UserService.deleteUser(id, req.user.id);
+        await this.userService.deleteUser(id, req.user.id);
         return res.status(200).json({
             message: 'Usuário deletado com sucesso'
         });
     } catch (error) {
         next(error);
-    }
-  }
-}
+    };
+  };
 
-export default new UserController();
+};

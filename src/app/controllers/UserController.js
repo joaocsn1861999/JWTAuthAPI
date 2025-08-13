@@ -1,8 +1,9 @@
 export default class UserController {
   
-  constructor ({userService, userValidators}) {
+  constructor ({userService, userValidators, isMe}) {
     this.userService = userService;
     this.userValidators = userValidators;
+    this.isMe = isMe;
   };
   async index(req, res, next) {
     try {
@@ -86,10 +87,10 @@ export default class UserController {
     };
   };
 
-  async update(req, res, next, me) {
+  async update(req, res, next) {
     try {
         const userData = req.body;
-        const userId = me ? req.user.id : req.params.id;
+        const userId = this.isMe ? req.user.id : req.params.id;
         const userValidation = this.userValidators.isValidUserToUpdate({id: userId, ...userData});
         if (!userValidation.isValid) {
             return res.status(400).json({
@@ -139,9 +140,9 @@ export default class UserController {
     };
   };
 
-  async destroy(req, res, next, me) {
+  async destroy(req, res, next) {
     try {
-        const id = me ? req.user.id : req.params.id;
+        const id = this.isMe ? req.user.id : req.params.id;
         const idValidation = this.userValidators.isValidId(id);
         if (!idValidation.isValid) {
             return res.status(400).json({

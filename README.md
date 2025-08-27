@@ -75,6 +75,8 @@ http://localhost:3000/
     ```
 
 - **GET** **`/token-validation`** → Faz a validação do token.
+    - Autenticação (Bearer token):
+        - token (Obrigatório): token de acesso.
     
     ```json
 

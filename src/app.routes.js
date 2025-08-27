@@ -11,7 +11,7 @@ const userController = makeInvoker(UserController);
 const appRouter = Router();
 
 appRouter.post('/login', authController('login'));
-appRouter.post('/token-validation', tokenValidator, authController('validTokenResponse'));
+appRouter.get('/token-validation', tokenValidator, authController('validTokenResponse'));
 
 appRouter.get('/users', tokenValidator, userController('index'));
 appRouter.get('/users/count', tokenValidator, userController('count'));

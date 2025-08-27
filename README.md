@@ -8,8 +8,8 @@
 2.  [Como rodar o projeto](#como-rodar-o-projeto)
 3.  [Endpoints](#endpoints)
     * [Base URL](#url-base)
-    * [Login](#login)
-    * [Usuários](#usuarios)
+    * [Autenticação](#autenticação)
+    * [Usuários](#usuários)
 4.  [Tecnologias Utilizadas (Dependências)](#tecnologias-utilizadas-dependências)
 
 ---
@@ -55,7 +55,7 @@ http://localhost:3000/
 
 ---
 
-### Login
+### Autenticação
 
 - **POST** **`/login`** → Busca a data.
     
@@ -71,6 +71,27 @@ http://localhost:3000/
     {
         "message": "Login realizado com sucesso",
         "token": "tokenDeAcesso"
+    }
+    ```
+
+- **GET** **`/token-validation`** → Faz a validação do token.
+    
+    ```json
+
+    // Exemplo de resposta
+    {
+        "message": "Token válido",
+        "valid": true,
+        "user": {
+          "id": 1,
+          "first_name": "User",
+          "last_name": "Admin",
+          "email": "adminuser@email.com",
+          "is_admin": true,
+          "active": true,
+          "created_at": "2025-05-22 18:03:58",
+          "updated_at": "2025-05-22 18:03:58"
+        }
     }
     ```
 

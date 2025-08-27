@@ -1,16 +1,17 @@
 import { Router } from 'express';
 import { makeInvoker } from 'awilix-express';
-import LoginController from './app/controllers/LoginController.js';
+import AuthController from './app/controllers/AuthController.js';
 import UserController from './app/controllers/UserController.js';
 import adminUserCheck from './app/middlewares/adminUserCheck.js';
 import tokenValidator from './app/middlewares/tokenValidator.js';
 import { meScope, otherUserScope } from './app/middlewares/requestScope.js'
 
-const loginController = makeInvoker(LoginController);
+const authController = makeInvoker(AuthController);
 const userController = makeInvoker(UserController);
 const appRouter = Router();
 
-appRouter.post('/login', loginController('login'));
+appRouter.post('/login', authController('login'));
+appRouter.post('/token-validation', tokenValidator, authController('validTokenResponse'));
 
 appRouter.get('/users', tokenValidator, userController('index'));
 appRouter.get('/users/count', tokenValidator, userController('count'));

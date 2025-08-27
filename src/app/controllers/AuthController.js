@@ -1,6 +1,6 @@
-export default class LoginController {
+export default class AuthController {
 
-  constructor ({authService}) {
+  constructor ({authService, userService}) {
     this.authService = authService;
   };
 
@@ -20,6 +20,20 @@ export default class LoginController {
       });
     } catch (error) {
         next(error);
+    };
+  };
+
+  async validTokenResponse(req, res, next) {
+    try {
+      const userId = req.user.id;
+      const user = this.userService.findById(userId);
+      res.status(200).json({
+          message: 'Token válido',
+          valid: true,
+          user
+        });
+    } catch (error) {
+      next(error);
     };
   };
 
